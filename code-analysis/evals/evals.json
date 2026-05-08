@@ -1,0 +1,40 @@
+{
+  "skill_name": "code-analysis",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Analizza il codice nella cartella src/ di questo progetto e dimmi come è strutturato",
+      "expected_output": "Un file .md salvato sotto .claude/analysis/ (es. .claude/analysis/src.md) con una struttura chiara: overview, architettura, componenti chiave, dipendenze, osservazioni sulla qualità del codice",
+      "files": [],
+      "expectations": [
+        "Viene creato un file .md sotto la directory .claude/analysis/",
+        "Il report contiene almeno le sezioni Overview, Architettura e Componenti chiave",
+        "Il nome del file è descrittivo e riferito a ciò che è stato analizzato",
+        "Il report include osservazioni concrete (non generiche) basate sul codice trovato"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fammi un'analisi del modulo di autenticazione in src/auth/ concentrandoti sulla sicurezza",
+      "expected_output": "Un file .md salvato sotto .claude/analysis/ focalizzato sugli aspetti di sicurezza del modulo auth: vulnerabilità potenziali, pattern usati, raccomandazioni",
+      "files": [],
+      "expectations": [
+        "Viene creato un file .md sotto .claude/analysis/",
+        "Il report è focalizzato sulla sicurezza, non è un'analisi generica",
+        "Vengono citati file specifici e aspetti concreti del codice analizzato",
+        "Sono presenti raccomandazioni o osservazioni sulla sicurezza"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Analizza src/utils/ e salva il risultato in docs/code-review.md",
+      "expected_output": "Un file salvato in docs/code-review.md (override dell'output di default), con analisi del contenuto di src/utils/",
+      "files": [],
+      "expectations": [
+        "Il file viene salvato in docs/code-review.md e NON sotto .claude/analysis/",
+        "Il report analizza il contenuto di src/utils/",
+        "La struttura del report è comunque ben organizzata con sezioni chiare"
+      ]
+    }
+  ]
+}
