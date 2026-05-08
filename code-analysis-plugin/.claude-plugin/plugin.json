@@ -1,0 +1,9 @@
+{
+  "name": "code-analysis",
+  "version": "1.0.0",
+  "description": "Analizza il codice di cartelle e file, producendo report Markdown strutturati sotto .claude/analysis/ per default.",
+  "author": {
+    "name": "Emanuele Toffolon",
+    "email": "emanuele.toffolon@enesi.it"
+  }
+}

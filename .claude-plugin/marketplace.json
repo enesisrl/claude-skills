@@ -1,0 +1,15 @@
+{
+  "name": "emanuele-claude-skills",
+  "description": "Plugin personali Claude Code di Emanuele Toffolon",
+  "owner": {
+    "name": "Emanuele Toffolon",
+    "email": "emanuele.toffolon@enesi.it"
+  },
+  "plugins": [
+    {
+      "name": "code-analysis",
+      "source": "./code-analysis-plugin",
+      "description": "Analizza il codice di cartelle e file, producendo report Markdown strutturati sotto .claude/analysis/ per default."
+    }
+  ]
+}
