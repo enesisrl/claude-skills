@@ -10,6 +10,11 @@
       "name": "code-analysis",
       "source": "./code-analysis-plugin",
       "description": "Analizza il codice di cartelle e file, producendo report Markdown strutturati sotto .claude/analysis/ per default."
+    },
+    {
+      "name": "dev-plan",
+      "source": "./dev-plan-plugin",
+      "description": "Redige piani di sviluppo strutturati per feature, refactor, bug fix e migrazioni, salvandoli come Markdown sotto .claude/dev_plans/ per default."
     }
   ]
 }

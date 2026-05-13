@@ -1,0 +1,9 @@
+{
+  "name": "dev-plan",
+  "version": "1.0.0",
+  "description": "Redige piani di sviluppo strutturati per feature, refactor, bug fix e migrazioni, salvandoli come Markdown sotto .claude/dev_plans/ per default.",
+  "author": {
+    "name": "Emanuele Toffolon",
+    "email": "emanuele.toffolon@enesi.it"
+  }
+}
