@@ -15,6 +15,11 @@
       "name": "dev-plan",
       "source": "./dev-plan-plugin",
       "description": "Redige piani di sviluppo strutturati per feature, refactor, bug fix e migrazioni, salvandoli come Markdown sotto .claude/dev_plans/ per default."
+    },
+    {
+      "name": "jira-worker",
+      "source": "./jira-worker-plugin",
+      "description": "Command /jira-worker: lavora i ticket di uno spazio Jira (In Corso → implementazione → commento → Testing), senza commit automatici."
     }
   ]
 }

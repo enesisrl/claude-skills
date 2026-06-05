@@ -1,0 +1,9 @@
+{
+  "name": "jira-worker",
+  "version": "1.0.0",
+  "description": "Lavora i ticket di uno spazio Jira: li sposta in In Corso, li implementa con Claude Code, commenta il ticket e li porta in Testing.",
+  "author": {
+    "name": "Emanuele Toffolon",
+    "email": "emanuele.toffolon@enesi.it"
+  }
+}
