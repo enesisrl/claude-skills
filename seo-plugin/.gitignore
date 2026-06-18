@@ -1,0 +1,4 @@
+# Secrets — never commit API keys
+.pagespeed.key
+*.key
+.env

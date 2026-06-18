@@ -20,6 +20,11 @@
       "name": "jira-worker",
       "source": "./jira-worker-plugin",
       "description": "Command /jira-worker: lavora i ticket di uno spazio Jira (In Corso → implementazione → commento → Testing), senza commit automatici."
+    },
+    {
+      "name": "seo-geo-aeo",
+      "source": "./seo-plugin",
+      "description": "Audit SEO / GEO / AEO di un sito web con punteggio deterministico e report scaricabile in Word e PDF; integrazione opzionale PageSpeed Insights."
     }
   ]
 }

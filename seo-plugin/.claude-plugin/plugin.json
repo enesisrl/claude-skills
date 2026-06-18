@@ -1,0 +1,9 @@
+{
+  "name": "seo-geo-aeo",
+  "version": "1.1.0",
+  "description": "Audit SEO / GEO / AEO di un sito web: analizza HTML, schema, E-E-A-T e segnali per snippet e motori AI, con punteggio deterministico e report scaricabile in Word e PDF. Integrazione opzionale PageSpeed Insights per Core Web Vitals.",
+  "author": {
+    "name": "Emanuele Toffolon",
+    "email": "emanuele.toffolon@enesi.it"
+  }
+}
