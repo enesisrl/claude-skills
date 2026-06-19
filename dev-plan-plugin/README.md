@@ -16,7 +16,7 @@ When you ask Claude for a development plan (feature, refactor, bug fix, migratio
 ### 1. Add the marketplace
 
 ```bash
-claude plugin marketplace add github:emanueletoffolon/claude-skills
+claude plugin marketplace add github:enesisrl/claude-skills
 ```
 
 ### 2. Install the plugin
