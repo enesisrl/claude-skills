@@ -15,7 +15,7 @@ When you ask Claude to analyze code in a folder or file, this skill instructs it
 ### 1. Add the marketplace
 
 ```bash
-claude plugin marketplace add github:emanueletoffolon/claude-skills
+claude plugin marketplace add github:enesisrl/claude-skills
 ```
 
 ### 2. Install the plugin
