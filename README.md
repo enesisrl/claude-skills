@@ -2,7 +2,7 @@
 
 Marketplace di **plugin per [Claude Code](https://claude.com/claude-code)** sviluppato da **Enesi srl**.
 
-Questo repository raccoglie un insieme di plugin (skill e command) pensati per automatizzare attività ricorrenti del flusso di lavoro: analisi del codice, redazione di piani di sviluppo, lavorazione dei ticket Jira e audit SEO/GEO/AEO di siti web. Tutti i plugin sono dichiarati in un unico marketplace e possono essere installati singolarmente.
+Questo repository raccoglie un insieme di plugin (skill e command) pensati per automatizzare attività ricorrenti del flusso di lavoro: analisi del codice, redazione di piani di sviluppo, lavorazione dei ticket Jira, audit SEO/GEO/AEO di siti web e audit di performance di siti Master Laravel Enesi. Tutti i plugin sono dichiarati in un unico marketplace e possono essere installati singolarmente.
 
 ---
 
@@ -15,6 +15,7 @@ Questo repository raccoglie un insieme di plugin (skill e command) pensati per a
   - [dev-plan](#dev-plan)
   - [jira-worker](#jira-worker)
   - [seo-geo-aeo](#seo-geo-aeo)
+  - [perf-audit](#perf-audit)
 - [Struttura del repository](#struttura-del-repository)
 - [Sviluppo e contributi](#sviluppo-e-contributi)
 
@@ -42,6 +43,7 @@ claude plugin install code-analysis
 claude plugin install dev-plan
 claude plugin install jira-worker
 claude plugin install seo-geo-aeo
+claude plugin install perf-audit
 ```
 
 Per aggiornare un plugin già installato:
@@ -60,6 +62,7 @@ claude plugin update <nome-plugin>
 | [`dev-plan`](#dev-plan) | Skill | 1.0.0 | Piani di sviluppo strutturati per feature, refactor, bug fix e migrazioni |
 | [`jira-worker`](#jira-worker) | Command | 1.0.0 | Lavora i ticket di uno spazio Jira (In Corso → implementazione → commento → Testing) |
 | [`seo-geo-aeo`](#seo-geo-aeo) | Skill | 1.1.0 | Audit SEO / GEO / AEO di un sito con punteggio deterministico e report Word/PDF |
+| [`perf-audit`](#perf-audit) | Command | 1.0.0 | Audit di performance a imbuto per siti Master Laravel Enesi, con report prioritizzato |
 
 ---
 
@@ -164,6 +167,38 @@ Claude chiede se preferisci un **Quick Audit** (problemi principali e punteggi) 
 
 ---
 
+### perf-audit
+
+Command `/perf-audit` che esegue un **audit di performance a imbuto** (misura → isola → scava) su siti **Master Laravel Enesi** (Laravel 12, UUID, tabelle di traduzione, URL SEO `rewurl_*`, codice in `private/`).
+
+Localizza prima *dove* sta il tempo (server vs DB vs rete vs frontend) con misure black-box, poi scende nel dettaglio solo sul layer colpevole, confrontando ogni numero con soglie di riferimento. Copre 8 fasi:
+
+1. **Setup/detect** e scelta delle URL di prova reali (rotte SEO);
+2. **Baseline TTFB** (cold/warm, DNS/connect/TLS separati);
+3. **Carico/concorrenza** con `hey`/`ab`/`wrk` (percentili p50…p99) — *solo se autorizzato*;
+4. **Profiling server-side**: query count & N+1 (Debugbar, **Telescope**, Clockwork);
+5. **Database**: top query per latenza, `EXPLAIN`, indici mancanti su FK UUID e `rewurl`;
+6. **Cache & config infra**: OPcache, cache buildate, driver cache/sessione, Redis, Meilisearch;
+7. **Chiamate esterne sincrone** nel render (Stripe/shipping/social);
+8. **Frontend/delivery** (Lighthouse) e **risorse server**.
+
+Adotta un **doppio passaggio** — Pass A diagnostico (`APP_DEBUG=true`, Debugbar/Telescope) per la struttura, Pass B realistico (`APP_DEBUG=false`, OPcache, cache buildate, Redis) per il numero che il cliente sente — e sa attingere anche a **Laravel Pulse** e ad APM (Sentry, New Relic, Datadog) se presenti. Gli audit ampi vengono delegati a subagenti read-only paralleli.
+
+**Utilizzo:**
+
+```
+/perf-audit [url-prod] [url-staging-o-locale]
+```
+
+- Senza argomenti usa il locale `http://127.0.0.1:8000` e avvisa che la diagnosi è parziale.
+- Con più URL, il **primo** è il bersaglio principale (di solito produzione), gli altri per confronto.
+
+Produce un report `private/storage/perf-audit/report-<TS>.md` con finding prioritizzati nel formato `Problema | Evidenza | Impatto | Fix | Sforzo`, separando **quick-win** (≤1h) e **interventi strutturali**.
+
+**Requisiti:** `curl`, `ab`, `wrk` nativi; `hey` e `lighthouse` via Docker; `jq`. I load test contro produzione vanno eseguiti **solo con autorizzazione esplicita** e su pagine in lettura.
+
+---
+
 ## Struttura del repository
 
 ```
@@ -188,6 +223,10 @@ claude-skills/
 │   ├── skills/README.md
 │   ├── .pagespeed.key.example
 │   └── .gitignore
+├── perf-audit-plugin/
+│   ├── .claude-plugin/plugin.json
+│   ├── commands/perf-audit.md
+│   └── README.md
 └── README.md                     ← questo file
 ```
 

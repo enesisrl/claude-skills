@@ -25,6 +25,11 @@
       "name": "seo-geo-aeo",
       "source": "./seo-plugin",
       "description": "Audit SEO / GEO / AEO di un sito web con punteggio deterministico e report scaricabile in Word e PDF; integrazione opzionale PageSpeed Insights."
+    },
+    {
+      "name": "perf-audit",
+      "source": "./perf-audit-plugin",
+      "description": "Command /perf-audit: audit di performance a imbuto per siti Master Laravel Enesi (TTFB, carico, N+1, DB, cache, frontend) con report finale prioritizzato."
     }
   ]
 }

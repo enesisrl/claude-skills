@@ -1,0 +1,21 @@
+{
+  "name": "perf-audit",
+  "version": "1.0.0",
+  "description": "Audit di performance a imbuto per siti Master Laravel Enesi: TTFB, carico, N+1, DB, cache, frontend, con report finale prioritizzato.",
+  "author": {
+    "name": "Enesi"
+  },
+  "keywords": [
+    "performance",
+    "laravel",
+    "audit",
+    "ttfb",
+    "cache",
+    "n+1",
+    "lighthouse",
+    "master-enesi"
+  ],
+  "commands": [
+    "./commands/perf-audit.md"
+  ]
+}
