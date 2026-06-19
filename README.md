@@ -36,7 +36,7 @@ Ogni plugin di questo repository è di uno di questi tipi:
 
 ```bash
 # 1. Aggiungi il marketplace
-claude plugin marketplace add github:enesisrl/claude-skills
+claude plugin marketplace add https://github.com/enesisrl/claude-skill
 
 # 2. Installa i plugin che ti servono
 claude plugin install code-analysis
