@@ -30,6 +30,11 @@
       "name": "perf-audit",
       "source": "./perf-audit-plugin",
       "description": "Command /perf-audit: audit di performance a imbuto per siti Master Laravel Enesi (TTFB, carico, N+1, DB, cache, frontend) con report finale prioritizzato."
+    },
+    {
+      "name": "senior-engineer",
+      "source": "./senior-engineer-plugin",
+      "description": "Cinque command per valutare e investigare il codice dal punto di vista di un senior engineer: /audit, /debug, /refactor, /security, /techlead."
     }
   ]
 }

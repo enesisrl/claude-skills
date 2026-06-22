@@ -1,0 +1,26 @@
+{
+  "name": "senior-engineer",
+  "version": "1.0.0",
+  "description": "Cinque comandi di valutazione e indagine del codice che simulano i ruoli di un senior engineer: audit architetturale, debug metodico, refactoring pulito, audit di sicurezza e valutazione decisioni da tech lead.",
+  "author": {
+    "name": "Emanuele Toffolon",
+    "email": "emanuele.toffolon@enesi.it"
+  },
+  "keywords": [
+    "audit",
+    "debug",
+    "refactoring",
+    "security",
+    "tech-lead",
+    "code-quality",
+    "senior-engineer",
+    "architecture"
+  ],
+  "commands": [
+    "./commands/audit.md",
+    "./commands/debug.md",
+    "./commands/refactor.md",
+    "./commands/security.md",
+    "./commands/techlead.md"
+  ]
+}

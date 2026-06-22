@@ -2,7 +2,7 @@
 
 Marketplace di **plugin per [Claude Code](https://claude.com/claude-code)** sviluppato da **Enesi srl**.
 
-Questo repository raccoglie un insieme di plugin (skill e command) pensati per automatizzare attività ricorrenti del flusso di lavoro: analisi del codice, redazione di piani di sviluppo, lavorazione dei ticket Jira, audit SEO/GEO/AEO di siti web e audit di performance di siti Master Laravel Enesi. Tutti i plugin sono dichiarati in un unico marketplace e possono essere installati singolarmente.
+Questo repository raccoglie un insieme di plugin (skill e command) pensati per automatizzare attività ricorrenti del flusso di lavoro: analisi del codice, redazione di piani di sviluppo, lavorazione dei ticket Jira, audit SEO/GEO/AEO di siti web, audit di performance di siti Master Laravel Enesi e investigazione del codice dal punto di vista di un senior engineer. Tutti i plugin sono dichiarati in un unico marketplace e possono essere installati singolarmente.
 
 ---
 
@@ -16,6 +16,7 @@ Questo repository raccoglie un insieme di plugin (skill e command) pensati per a
   - [jira-worker](#jira-worker)
   - [seo-geo-aeo](#seo-geo-aeo)
   - [perf-audit](#perf-audit)
+  - [senior-engineer](#senior-engineer)
 - [Struttura del repository](#struttura-del-repository)
 - [Sviluppo e contributi](#sviluppo-e-contributi)
 
@@ -44,6 +45,7 @@ claude plugin install dev-plan
 claude plugin install jira-worker
 claude plugin install seo-geo-aeo
 claude plugin install perf-audit
+claude plugin install senior-engineer
 ```
 
 Per aggiornare un plugin già installato:
@@ -63,6 +65,7 @@ claude plugin update <nome-plugin>
 | [`jira-worker`](#jira-worker) | Command | 1.0.0 | Lavora i ticket di uno spazio Jira (In Corso → implementazione → commento → Testing) |
 | [`seo-geo-aeo`](#seo-geo-aeo) | Skill | 1.1.0 | Audit SEO / GEO / AEO di un sito con punteggio deterministico e report Word/PDF |
 | [`perf-audit`](#perf-audit) | Command | 1.0.0 | Audit di performance a imbuto per siti Master Laravel Enesi, con report prioritizzato |
+| [`senior-engineer`](#senior-engineer) | Command | 1.0.0 | Cinque command di valutazione del codice dal punto di vista di un senior engineer |
 
 ---
 
@@ -199,6 +202,38 @@ Produce un report `private/storage/perf-audit/report-<TS>.md` con finding priori
 
 ---
 
+### senior-engineer
+
+Cinque command che simulano il punto di vista di un ruolo senior specifico. Tutti pensati per essere usati **prima di toccare il codice**: capire, valutare e decidere prima di scrivere o cambiare.
+
+| Command | Ruolo simulato | Quando usarlo |
+|---------|---------------|---------------|
+| `/senior-engineer:audit` | Senior engineer appena arrivato | Primo approccio a un codebase, identifica problemi architetturali prioritizzati per gravità |
+| `/senior-engineer:debug` | Senior engineer in produzione | Bug da investigare metodicamente: 4 fasi, nessun fix senza root cause |
+| `/senior-engineer:refactor` | Senior software architect | Refactoring clean architecture: proposta → conferma → esecuzione, un cambiamento alla volta |
+| `/senior-engineer:security` | Senior security engineer | Audit OWASP + baseline igiene: ogni finding con scenario di attacco e fix pronto |
+| `/senior-engineer:techlead` | Senior technical lead | Valutazione decisioni tecniche con tradeoff espliciti, prima di scrivere codice |
+
+I comandi si integrano tra loro: `/audit` alimenta `/refactor`, `/techlead` porta a `/dev-plan`, `/debug` usa la metodologia delle 4 fasi di `systematic-debugging`.
+
+**Installazione:**
+
+```bash
+claude plugin install senior-engineer
+```
+
+**Utilizzo:**
+
+```
+/senior-engineer:audit src/
+/senior-engineer:debug "ordini duplicati in produzione da ieri mattina"
+/senior-engineer:refactor app/Http/Controllers/
+/senior-engineer:security app/Http/Controllers/AuthController.php
+/senior-engineer:techlead "usare Redis per le sessioni invece del DB"
+```
+
+---
+
 ## Struttura del repository
 
 ```
@@ -226,6 +261,15 @@ claude-skills/
 ├── perf-audit-plugin/
 │   ├── .claude-plugin/plugin.json
 │   ├── commands/perf-audit.md
+│   └── README.md
+├── senior-engineer-plugin/
+│   ├── .claude-plugin/plugin.json
+│   ├── commands/
+│   │   ├── audit.md
+│   │   ├── debug.md
+│   │   ├── refactor.md
+│   │   ├── security.md
+│   │   └── techlead.md
 │   └── README.md
 └── README.md                     ← questo file
 ```
