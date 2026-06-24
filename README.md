@@ -295,11 +295,31 @@ Ogni plugin ha:
 
 Aggiornamenti notevoli dei plugin. La versione corrente di ogni plugin è nella colonna *Versione* della tabella [Plugin disponibili](#plugin-disponibili).
 
+### code-analysis
+
+- **1.0.0** — Release iniziale: skill di analisi del codice che produce report Markdown strutturati (Overview, Architecture, Key Components, Dependencies, Code Quality, Summary), salvati per default sotto `.claude/analysis/`.
+
+### dev-plan
+
+- **1.0.0** — Release iniziale: skill che redige piani di sviluppo strutturati (obiettivo, scope, requisiti, stato attuale, approccio, fasi e task, rischi, testing, domande aperte), salvati per default sotto `.claude/dev_plans/`.
+
+### jira-worker
+
+- **1.0.0** — Release iniziale: command `/jira-worker` che lavora i ticket di uno spazio Jira (In Corso → implementazione → commento → Testing), senza eseguire commit. Richiede il connettore MCP Atlassian.
+
 ### seo-geo-aeo
 
 - **3.0.0** — Da skill auto-attivante a **slash command esplicito `/seo-report`**, per evitare conflitti di routing con le skill di `claude-seo`. Ingestione dell'envelope completo di `claude-seo` (severità complete, SXO, business intelligence), campionamento della lingua del cliente, verifica HTTP degli header reali, **controllo credenziali Google/backlink con avviso** all'utente. Template Enesi con pagina SXO opzionale, paginazione robusta (pagine ad altezza fissa, numero pagina nell'header, footer con indirizzo legale solo in cover) e criticità paginate.
 - **2.0.0** — Riscrittura come **orchestratore su `claude-seo`** con report PDF in italiano e design system Enesi (3 assi SEO/GEO/AEO + health score pesato /100). Output solo PDF via WeasyPrint (senza browser headless); rimossa la skill standalone e l'integrazione PageSpeed locale.
 - **1.x** — Skill standalone precedente (scoring deterministico interno, output Word/PDF generico).
+
+### perf-audit
+
+- **1.0.0** — Release iniziale: command `/perf-audit` per l'audit di performance a imbuto (misura → isola → scava) su siti Master Laravel Enesi (TTFB, carico/concorrenza, profiling N+1, database, cache, chiamate esterne, frontend), con report finale prioritizzato.
+
+### senior-engineer
+
+- **1.0.0** — Release iniziale: cinque command (`audit`, `debug`, `refactor`, `security`, `techlead`) che simulano i ruoli di un senior engineer, pensati per capire e valutare il codice prima di modificarlo.
 
 ---
 
