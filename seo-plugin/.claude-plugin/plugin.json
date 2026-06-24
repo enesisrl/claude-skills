@@ -1,9 +1,24 @@
 {
   "name": "seo-geo-aeo",
-  "version": "1.1.0",
-  "description": "Audit SEO / GEO / AEO di un sito web: analizza HTML, schema, E-E-A-T e segnali per snippet e motori AI, con punteggio deterministico e report scaricabile in Word e PDF. Integrazione opzionale PageSpeed Insights per Core Web Vitals.",
+  "version": "3.0.0",
+  "description": "Command /seo-report: report SEO / GEO / AEO in italiano con il design system Enesi (PDF). Orchestratore esplicito che delega l'analisi al plugin claude-seo (AgriciDaniel) — technical SEO, E-E-A-T, schema, Core Web Vitals, AI-search/GEO, hreflang, SXO, immagini — e ne mappa i risultati in un report a 3 assi (SEO/GEO/AEO) con health score pesato /100, raccomandazioni, criticità, snippet schema e piano d'azione. È uno slash command (non una skill) per evitare conflitti di routing con le skill di claude-seo. Richiede il plugin claude-seo installato.",
   "author": {
     "name": "Emanuele Toffolon",
     "email": "emanuele.toffolon@enesi.it"
-  }
+  },
+  "keywords": [
+    "seo",
+    "geo",
+    "aeo",
+    "audit",
+    "report",
+    "enesi",
+    "claude-seo",
+    "core-web-vitals",
+    "schema",
+    "pdf"
+  ],
+  "commands": [
+    "./commands/seo-report.md"
+  ]
 }

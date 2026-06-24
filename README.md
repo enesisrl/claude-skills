@@ -63,7 +63,7 @@ claude plugin update <nome-plugin>
 | [`code-analysis`](#code-analysis) | Skill | 1.0.0 | Report Markdown strutturati di analisi del codice |
 | [`dev-plan`](#dev-plan) | Skill | 1.0.0 | Piani di sviluppo strutturati per feature, refactor, bug fix e migrazioni |
 | [`jira-worker`](#jira-worker) | Command | 1.0.0 | Lavora i ticket di uno spazio Jira (In Corso → implementazione → commento → Testing) |
-| [`seo-geo-aeo`](#seo-geo-aeo) | Skill | 1.1.0 | Audit SEO / GEO / AEO di un sito con punteggio deterministico e report Word/PDF |
+| [`seo-geo-aeo`](#seo-geo-aeo) | Command | 3.0.0 | `/seo-report`: report SEO / GEO / AEO orchestrato su `claude-seo`, in italiano con design system Enesi (PDF) |
 | [`perf-audit`](#perf-audit) | Command | 1.0.0 | Audit di performance a imbuto per siti Master Laravel Enesi, con report prioritizzato |
 | [`senior-engineer`](#senior-engineer) | Command | 1.0.0 | Cinque command di valutazione del codice dal punto di vista di un senior engineer |
 
@@ -141,32 +141,40 @@ Prima di iniziare mostra la lista dei ticket trovati e chiede quali lavorare; da
 
 ### seo-geo-aeo
 
-Skill di **audit di un sito web** su tre dimensioni della visibilità di ricerca moderna:
+Command `/seo-report` che produce un **report di audit di un sito** su tre dimensioni della visibilità di ricerca moderna, **in italiano con il design system Enesi** (PDF):
 
-- **SEO** — ottimizzazione per i motori tradizionali (Google, Bing): title, meta description, struttura degli heading, schema markup, link interni, qualità dei contenuti;
+- **SEO** — ottimizzazione per i motori tradizionali (Google, Bing): title, meta description, struttura degli heading, schema markup, link interni, qualità dei contenuti, performance;
 - **GEO** — *Generative Engine Optimization* per i motori AI (Perplexity, ChatGPT Search, Google AI Overviews, Gemini): segnali E-E-A-T, chiarezza delle entità, densità informativa, autorevolezza dell'autore;
 - **AEO** — *Answer Engine Optimization* per featured snippet e ricerca vocale: FAQ schema, HowTo schema, heading formulati come domande, risposte dirette.
 
-L'audit usa un **punteggio deterministico basato su checklist** (risultati riproducibili) e produce un **report scaricabile in Word (.docx) e PDF**. Per i siti renderizzati in JavaScript il contenuto viene ri-renderizzato nel browser prima della valutazione.
+**Perché un command e non una skill.** Con `claude-seo` installato, le sue skill (`seo`, `seo-audit`, `seo-page`, …) si attivano sugli stessi trigger naturali (la parola "SEO", "audit", una URL): una skill auto-attivante nostra competerebbe con quelle, col rischio concreto di eseguire la skill sbagliata. Per questo il plugin espone uno **slash command esplicito** (`/seo-report`), che delega in modo altrettanto esplicito alla skill `claude-seo:seo-audit`.
 
-**Esempi d'uso:**
+**Architettura — orchestratore + report Enesi.** Il command **non riesegue** l'analisi: delega l'audit al plugin **[`claude-seo`](https://github.com/AgriciDaniel/claude-seo)** (di AgriciDaniel), ne ingerisce l'envelope completo (`audit-data.json`, findings, action plan) e lo mappa nel **report Enesi**, renderizzato in PDF. `claude-seo` fa l'analisi completa (technical SEO, content/E-E-A-T, schema, Core Web Vitals, AI-search/GEO, hreflang, local, SXO, immagini, health score /100 e action plan); il command aggiunge i tre assi SEO/GEO/AEO, il design system Enesi, la lingua italiana e il PDF da consegnare al cliente.
 
-> - "Can you audit `example.com` for SEO?"
-> - "Audit this URL for AI search readiness: `example.com`"
-> - "Run a full SEO, GEO, and AEO audit on my website"
+Il report finale è un PDF A4 (fino a 14 pagine: cover a 3 assi + health score pesato /100, pagine analizzate, analisi per dimensione, raccomandazioni prioritarie, criticità per severità — paginate, snippet schema pronti, piano d'azione a sprint, punti di forza, SXO opzionale, glossario), generato a partire da `assets/report-template.html` — la versione autonoma del template `templates/report-seo/ReportSeo.dc.html` del progetto **Enesi Design System** su claude.ai/design.
 
-Claude chiede se preferisci un **Quick Audit** (problemi principali e punteggi) o un **Full Audit** (analisi completa), quindi effettua il crawl di più pagine prima di consegnare il report.
+**Requisiti:**
 
-**Integrazione opzionale PageSpeed Insights** — per misurare i Core Web Vitals e i punteggi Lighthouse, configura una API key gratuita di Google PageSpeed Insights:
+- Plugin **`claude-seo`** installato (motore di analisi):
+  ```bash
+  claude plugin marketplace add https://github.com/AgriciDaniel/claude-seo
+  claude plugin install claude-seo
+  ```
+- **WeasyPrint** per la conversione HTML→PDF (già installato da `claude-seo`; in alternativa `pip install weasyprint`).
+- *(Opzionale, consigliato)* credenziali Google/API in `claude-seo` per Core Web Vitals **di campo** (via CrUX/PageSpeed — API, niente browser), backlink e GSC/GA4. Prima di ogni audit il command **verifica le credenziali e avvisa** se mancano (performance euristiche vs reali).
 
-1. Su [console.cloud.google.com](https://console.cloud.google.com) crea o seleziona un progetto.
-2. **APIs & Services → Library →** cerca **PageSpeed Insights API → Enable**.
-3. **APIs & Services → Credentials → Create credentials → API key**, copia la chiave.
-4. Nella root del plugin copia `.pagespeed.key.example` in `.pagespeed.key` e incolla la chiave su una sola riga.
+> **Generazione PDF senza browser.** Il command usa **WeasyPrint** (motore HTML→PDF senza browser) perché le regole globali Enesi vietano l'avvio di un browser in modalità headless. Chrome `--headless --print-to-pdf` resta solo come fallback, da autorizzare esplicitamente.
 
-`.pagespeed.key` è in `.gitignore`: non va mai committato. L'API è raggiunta tramite il canale browser di Claude-in-Chrome (non dal sandbox); senza un browser connesso l'audit gira comunque, ma senza dati di performance.
+**Utilizzo:**
 
-> Oltre che come plugin Claude Code, questa skill può essere usata anche nell'app desktop **Claude Cowork** caricando il pacchetto ZIP della cartella `seo-plugin` (Customize → Skills → **+**).
+```
+/seo-report <url> [quick|full]
+```
+
+- `<url>`: il sito da auditare (se omesso, viene chiesto).
+- `quick` | `full` (facoltativo): profondità dell'audit; se omesso, il command chiede.
+
+Esempi: `/seo-report https://www.esempio.it full` · `/seo-report esempio.it`
 
 ---
 
@@ -254,9 +262,9 @@ claude-skills/
 │   └── README.md
 ├── seo-plugin/
 │   ├── .claude-plugin/plugin.json
-│   ├── skills/seo-geo-aeo/SKILL.md
-│   ├── skills/README.md
-│   ├── .pagespeed.key.example
+│   ├── assets/report-template.html   ← template report Enesi (design)
+│   ├── commands/seo-report.md        ← command /seo-report
+│   ├── README.md
 │   └── .gitignore
 ├── perf-audit-plugin/
 │   ├── .claude-plugin/plugin.json
