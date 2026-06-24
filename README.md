@@ -18,6 +18,7 @@ Questo repository raccoglie un insieme di plugin (skill e command) pensati per a
   - [perf-audit](#perf-audit)
   - [senior-engineer](#senior-engineer)
 - [Struttura del repository](#struttura-del-repository)
+- [Changelog](#changelog)
 - [Sviluppo e contributi](#sviluppo-e-contributi)
 
 ---
@@ -287,6 +288,18 @@ Ogni plugin ha:
 - un `plugin.json` con nome, versione, descrizione e autore;
 - una `SKILL.md` (per le skill) o un file in `commands/` (per i command) che contiene le istruzioni operative — la *source of truth* del comportamento;
 - un `README.md` dedicato con installazione e dettagli specifici.
+
+---
+
+## Changelog
+
+Aggiornamenti notevoli dei plugin. La versione corrente di ogni plugin è nella colonna *Versione* della tabella [Plugin disponibili](#plugin-disponibili).
+
+### seo-geo-aeo
+
+- **3.0.0** — Da skill auto-attivante a **slash command esplicito `/seo-report`**, per evitare conflitti di routing con le skill di `claude-seo`. Ingestione dell'envelope completo di `claude-seo` (severità complete, SXO, business intelligence), campionamento della lingua del cliente, verifica HTTP degli header reali, **controllo credenziali Google/backlink con avviso** all'utente. Template Enesi con pagina SXO opzionale, paginazione robusta (pagine ad altezza fissa, numero pagina nell'header, footer con indirizzo legale solo in cover) e criticità paginate.
+- **2.0.0** — Riscrittura come **orchestratore su `claude-seo`** con report PDF in italiano e design system Enesi (3 assi SEO/GEO/AEO + health score pesato /100). Output solo PDF via WeasyPrint (senza browser headless); rimossa la skill standalone e l'integrazione PageSpeed locale.
+- **1.x** — Skill standalone precedente (scoring deterministico interno, output Word/PDF generico).
 
 ---
 
