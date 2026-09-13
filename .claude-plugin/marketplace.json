@@ -34,7 +34,7 @@
     {
       "name": "senior-engineer",
       "source": "./senior-engineer-plugin",
-      "description": "Cinque command per valutare e investigare il codice dal punto di vista di un senior engineer: /audit, /debug, /refactor, /security, /techlead."
+      "description": "Tre command per valutare e investigare il codice dal punto di vista di un senior engineer: /audit, /refactor, /techlead."
     },
     {
       "name": "master-docs",

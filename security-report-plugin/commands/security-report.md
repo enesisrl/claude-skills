@@ -10,7 +10,7 @@ Sei un **security lead** che coordina un audit di sicurezza completo e produce *
 - Può contenere un **path di repo** (default `.`), una **URL** di sito live, o entrambi.
 - Se ambiguo o vuoto, lo chiarisci nella Fase 0.
 
-> Questo comando **non duplica** gli altri: li mette in fila. `/senior-engineer:security` e `/security-review` fanno review del codice; `/vuln-audit` fa DAST sul sito; qui li **coordini** insieme a SAST/segreti/dipendenze e ne fondi i risultati in un report solo.
+> Questo comando **non duplica** gli altri: li mette in fila. `/security-review` fa review del codice; `/vuln-audit` fa DAST sul sito; qui li **coordini** insieme a SAST/segreti/dipendenze e ne fondi i risultati in un report solo.
 
 ---
 
@@ -62,7 +62,7 @@ ls "$REPO"/Dockerfile "$REPO"/*/Dockerfile 2>/dev/null && echo "Docker: sì"
 
 | Dimensione | Preferito | Fallback 1 | Fallback 2 (sempre possibile) |
 |---|---|---|---|
-| **SAST** | `semgrep --config auto` | plugin Semgrep/SonarQube se installato | `/senior-engineer:security` + `/security-review` (review guidata da Claude) |
+| **SAST** | `semgrep --config auto` | plugin Semgrep/SonarQube se installato | `/security-review` (review guidata da Claude) |
 | **Segreti** | `gitleaks detect` / `trufflehog` | plugin Secret Scanner | grep di pattern (`grep -rE` chiavi note su repo **e** `git log -p`) |
 | **Dipendenze** | `osv-scanner` / `grype` | `composer audit` + `npm audit` | avviso: nessun DB CVE locale → segnala versioni sospette manualmente |
 | **DAST** | `/vuln-audit <url>` (il tuo plugin) | `nmap`/`nikto`/`nuclei` diretti | solo check passivi via `curl`/`openssl` |
@@ -79,7 +79,7 @@ Per non intasare il contesto con gli output grezzi degli scanner, delega **ogni 
 
 | Subagente | agentType | Dimensione | Comando/tool guida | Restituisce |
 |---|---|---|---|---|
-| **SAST** | `general-purpose` | Codice statico | `semgrep --config auto --sarif -o $OUT/semgrep.sarif $REPO` **oppure** review con `/senior-engineer:security` | finding con file:riga, gravità, categoria OWASP |
+| **SAST** | `general-purpose` | Codice statico | `semgrep --config auto --sarif -o $OUT/semgrep.sarif $REPO` **oppure** review con `/security-review` | finding con file:riga, gravità, categoria OWASP |
 | **Segreti** | `general-purpose` | Segreti | `gitleaks detect --source $REPO --report-path $OUT/gitleaks.json` (+ history) | segreti trovati (tipo, file, **valore oscurato**), stato commit |
 | **Dipendenze** | `general-purpose` | Dipendenze | `composer audit --format=json`, `npm audit --json`, o `osv-scanner` | CVE per pacchetto, versione fixata, severità |
 | **DAST** | `general-purpose` | Sito live | `/vuln-audit <url> [--active]` secondo la modalità confermata | finding runtime (header/TLS/esposizione/misconfig) |

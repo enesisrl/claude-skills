@@ -5,8 +5,9 @@ su un **sito web in esecuzione**. Sonda il sito dall'esterno (black-box) per tro
 di sicurezza reali e produce un **report finale prioritizzato** con mappatura OWASP, nel formato
 `Vulnerabilità | Evidenza | Gravità | Impatto | Fix`.
 
-> ⚠️ Questo **non** è l'audit statico del codice. Per l'analisi dei sorgenti usa `/security` del
-> plugin `senior-engineer` (white-box, SAST). Qui il bersaglio è il **sito vivo**, non il codice.
+> ⚠️ Questo **non** è l'audit statico del codice. Per l'analisi dei sorgenti (white-box, SAST) usa
+> `/security-review`, o `/security-report` per un audit completo che coordina entrambi gli approcci.
+> Qui il bersaglio è il **sito vivo**, non il codice.
 
 ## Comando
 

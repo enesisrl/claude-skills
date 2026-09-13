@@ -5,9 +5,9 @@ prioritizzato** coordinando i migliori strumenti disponibili sulla macchina — 
 e tool CLI — invece di rifare tutto a mano. Sceglie per ogni dimensione lo strumento più forte
 presente e **degrada con fallback** quando manca, senza mai ridurre la copertura in silenzio.
 
-È il livello *orchestratore* sopra gli altri plugin di sicurezza: `/senior-engineer:security` e
-`/security-review` fanno review del **codice**, `/vuln-audit` fa **DAST** sul sito live — qui
-vengono messi in fila insieme a SAST/segreti/dipendenze/container e i risultati fusi in un report solo.
+È il livello *orchestratore* sopra gli altri plugin di sicurezza: `/security-review` fa review del
+**codice**, `/vuln-audit` fa **DAST** sul sito live — qui vengono messi in fila insieme a
+SAST/segreti/dipendenze/container e i risultati fusi in un report solo.
 
 ## Comando
 
@@ -38,7 +38,7 @@ Poi mostra il **piano** («eseguo X, Y, Z; salto W perché…») e attende il vi
 
 | Dimensione | Preferito | Fallback |
 |---|---|---|
-| **SAST** | `semgrep --config auto` | `/senior-engineer:security` + `/security-review` (review LLM) |
+| **SAST** | `semgrep --config auto` | `/security-review` (review LLM) |
 | **Segreti** | `gitleaks` / `trufflehog` | Secret Scanner plugin → grep di pattern su repo **e** history git |
 | **Dipendenze** | `osv-scanner` / `grype` | `composer audit` + `npm audit` |
 | **DAST** | `/vuln-audit <url>` | `nmap`/`nikto`/`nuclei` diretti → check passivi via `curl`/`openssl` |

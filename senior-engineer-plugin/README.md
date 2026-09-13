@@ -1,6 +1,6 @@
 # senior-engineer — Plugin Claude Code
 
-Cinque comandi di valutazione e indagine del codice, ciascuno che simula il punto di vista di un
+Tre comandi di valutazione e indagine del codice, ciascuno che simula il punto di vista di un
 ruolo senior specifico. Tutti pensati per essere usati **prima di toccare il codice**: capire,
 valutare e decidere prima di scrivere o cambiare.
 
@@ -19,18 +19,6 @@ di partenza se esiste.
 
 ---
 
-### `/debug [descrizione del bug, errore o file coinvolto]`
-Debug metodico come un senior engineer in produzione. Segue quattro fasi sequenziali (root cause
-→ pattern → ipotesi → fix) con la legge ferrea: nessun fix prima di aver identificato la causa.
-Include red flag espliciti e la regola dei 3+ fix falliti come segnale di problema architetturale.
-
-```
-/senior-engineer:debug "ordini duplicati in produzione da ieri mattina"
-/senior-engineer:debug app/Jobs/ProcessPayment.php
-```
-
----
-
 ### `/refactor [file o cartella]`
 Refactoring verso clean architecture come un senior software architect. Procede in due tempi:
 prima propone la struttura (senza toccare il codice), poi esegue solo dopo conferma. Un
@@ -39,19 +27,6 @@ cambiamento alla volta, con escalation se la portata si rivela più ampia del pr
 ```
 /senior-engineer:refactor app/Http/Controllers/
 /senior-engineer:refactor src/legacy/
-```
-
----
-
-### `/security [file, endpoint o area]`
-Audit di sicurezza come un senior security engineer. Parte da una baseline di igiene fondamentale
-(SSL, CSRF, hashing, segreti, errori), poi scende sulle vulnerabilità OWASP. Ogni finding include
-posizione, gravità, scenario di attacco concreto e fix pronto da usare. Distingue falle certe da
-sospetti da verificare.
-
-```
-/senior-engineer:security app/Http/Controllers/AuthController.php
-/senior-engineer:security "endpoint /api/orders"
 ```
 
 ---
@@ -69,11 +44,25 @@ dopo l'allineamento sulla direzione.
 
 ---
 
+## Cosa usare per debug e sicurezza
+
+Dalla **2.0.0** questo plugin non include più `/debug` e `/security`: erano duplicati di strumenti
+già disponibili, e tenerli significava mantenere due volte la stessa metodologia.
+
+| Ti serve | Usa |
+|----------|-----|
+| Investigare un bug risalendo alla root cause | La skill **`systematic-debugging`**, che si attiva **da sola** su qualsiasi bug, test rotto o comportamento inatteso — stessa legge ferrea (nessun fix senza root cause), stesse quattro fasi, stessi red flag. Nessun comando da digitare. |
+| Audit di sicurezza sul **codice** | `/security-review` (nativo di Claude Code) |
+| Audit di sicurezza **completo** (codice + sito live + segreti + dipendenze) | `/security-report` — orchestra SAST, DAST, segreti, dipendenze e container in un report unico |
+| Audit di sicurezza sul **sito live** (DAST) | `/vuln-audit` |
+
+---
+
 ## Flussi di lavoro consigliati
 
 **Audit → Refactoring pianificato**
 ```
-/senior-engineer:audit src/        → identifica le aree critiche
+/senior-engineer:audit src/              → identifica le aree critiche
 /senior-engineer:refactor src/Services/  → propone la nuova struttura
 /dev-plan refactor del layer Services    → pianifica a fasi rilasciabili
 ```
@@ -82,17 +71,6 @@ dopo l'allineamento sulla direzione.
 ```
 /senior-engineer:techlead "introdurre la queue per le email"
 /dev-plan implementazione queue email
-```
-
-**Bug in produzione**
-```
-/senior-engineer:debug "timeout sulle pagine prodotto dopo il deploy delle 14"
-```
-
-**Prima di un rilascio**
-```
-/senior-engineer:security app/Http/Controllers/
-/senior-engineer:security config/
 ```
 
 ---
@@ -105,9 +83,7 @@ senior-engineer-plugin/
 │   └── plugin.json
 ├── commands/
 │   ├── audit.md
-│   ├── debug.md
 │   ├── refactor.md
-│   ├── security.md
 │   └── techlead.md
 └── README.md
 ```

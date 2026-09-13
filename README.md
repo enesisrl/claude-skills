@@ -41,7 +41,7 @@ Ogni plugin di questo repository è di uno di questi tipi:
 
 ```bash
 # 1. Aggiungi il marketplace
-claude plugin marketplace add https://github.com/enesisrl/claude-skill
+claude plugin marketplace add https://github.com/enesisrl/claude-skills
 
 # 2. Installa i plugin che ti servono
 claude plugin install code-analysis
@@ -72,7 +72,7 @@ claude plugin update <nome-plugin>
 | [`jira-worker`](#jira-worker) | Command | 1.0.0 | Lavora i ticket di uno spazio Jira (In Corso → implementazione → commento → Testing) |
 | [`seo-geo-aeo`](#seo-geo-aeo) | Command | 3.0.0 | `/seo-report`: report SEO / GEO / AEO orchestrato su `claude-seo`, in italiano con design system Enesi (PDF) |
 | [`perf-audit`](#perf-audit) | Command | 1.0.0 | Audit di performance a imbuto per siti Master Laravel Enesi, con report prioritizzato |
-| [`senior-engineer`](#senior-engineer) | Command | 1.0.0 | Cinque command di valutazione del codice dal punto di vista di un senior engineer |
+| [`senior-engineer`](#senior-engineer) | Command | 2.0.0 | Tre command di valutazione del codice dal punto di vista di un senior engineer |
 | [`master-docs`](#master-docs) | Command | 1.6.0 | Flusso `graphify` + docs (knowledge graph + documentazione moduli) per progetti Master Laravel e app Ionic |
 | [`web-vuln-audit`](#web-vuln-audit) | Command | 1.0.0 | `/vuln-audit`: audit di vulnerabilità dinamico (DAST) di un sito web live, passivo/attivo, con report OWASP |
 | [`security-report`](#security-report) | Command | 1.0.0 | `/security-report`: report di sicurezza unificato che orchestra SAST/DAST/segreti/dipendenze/container, con conferma dei controlli |
@@ -222,17 +222,17 @@ Produce un report `private/storage/perf-audit/report-<TS>.md` con finding priori
 
 ### senior-engineer
 
-Cinque command che simulano il punto di vista di un ruolo senior specifico. Tutti pensati per essere usati **prima di toccare il codice**: capire, valutare e decidere prima di scrivere o cambiare.
+Tre command che simulano il punto di vista di un ruolo senior specifico. Tutti pensati per essere usati **prima di toccare il codice**: capire, valutare e decidere prima di scrivere o cambiare.
 
 | Command | Ruolo simulato | Quando usarlo |
 |---------|---------------|---------------|
 | `/senior-engineer:audit` | Senior engineer appena arrivato | Primo approccio a un codebase, identifica problemi architetturali prioritizzati per gravità |
-| `/senior-engineer:debug` | Senior engineer in produzione | Bug da investigare metodicamente: 4 fasi, nessun fix senza root cause |
 | `/senior-engineer:refactor` | Senior software architect | Refactoring clean architecture: proposta → conferma → esecuzione, un cambiamento alla volta |
-| `/senior-engineer:security` | Senior security engineer | Audit OWASP + baseline igiene: ogni finding con scenario di attacco e fix pronto |
 | `/senior-engineer:techlead` | Senior technical lead | Valutazione decisioni tecniche con tradeoff espliciti, prima di scrivere codice |
 
-I comandi si integrano tra loro: `/audit` alimenta `/refactor`, `/techlead` porta a `/dev-plan`, `/debug` usa la metodologia delle 4 fasi di `systematic-debugging`.
+I comandi si integrano tra loro: `/audit` alimenta `/refactor`, `/techlead` porta a `/dev-plan`.
+
+> **Debug e sicurezza non sono più qui.** Dalla 2.0.0 `/debug` e `/security` sono stati rimossi perché duplicavano strumenti già disponibili: per il debug si attiva da sola la skill **`systematic-debugging`** (stessa legge ferrea, stesse 4 fasi), per la sicurezza ci sono `/security-review`, `/security-report` e `/vuln-audit`.
 
 **Installazione:**
 
@@ -244,9 +244,7 @@ claude plugin install senior-engineer
 
 ```
 /senior-engineer:audit src/
-/senior-engineer:debug "ordini duplicati in produzione da ieri mattina"
 /senior-engineer:refactor app/Http/Controllers/
-/senior-engineer:security app/Http/Controllers/AuthController.php
 /senior-engineer:techlead "usare Redis per le sessioni invece del DB"
 ```
 
@@ -300,7 +298,7 @@ graphify query|explain|path
 
 ### web-vuln-audit
 
-Command `/vuln-audit` per un **audit di vulnerabilità dinamico (DAST)** su un **sito web in esecuzione**: sonda il sito dall'esterno (black-box) e produce un report prioritizzato con mappatura OWASP. È il complemento *runtime* di `/senior-engineer:security` (che invece analizza il **codice sorgente**, white-box).
+Command `/vuln-audit` per un **audit di vulnerabilità dinamico (DAST)** su un **sito web in esecuzione**: sonda il sito dall'esterno (black-box) e produce un report prioritizzato con mappatura OWASP. È il complemento *runtime* di `/security-review` (che invece analizza il **codice sorgente**, white-box).
 
 Il cardine sono le **due modalità**:
 
@@ -328,7 +326,7 @@ claude plugin install web-vuln-audit
 
 ### security-report
 
-Command `/security-report`: un **orchestratore di sicurezza** che produce **un unico report prioritizzato** coordinando i migliori strumenti disponibili sulla macchina — plugin Claude Code e tool CLI — invece di rifare tutto a mano. È il livello *orchestratore* sopra gli altri plugin: `/senior-engineer:security` e `/security-review` fanno review del **codice**, `/vuln-audit` fa **DAST** sul sito live; qui vengono messi in fila insieme a SAST/segreti/dipendenze/container e i risultati fusi in un report solo.
+Command `/security-report`: un **orchestratore di sicurezza** che produce **un unico report prioritizzato** coordinando i migliori strumenti disponibili sulla macchina — plugin Claude Code e tool CLI — invece di rifare tutto a mano. È il livello *orchestratore* sopra gli altri plugin: `/security-review` fa review del **codice**, `/vuln-audit` fa **DAST** sul sito live; qui vengono messi in fila insieme a SAST/segreti/dipendenze/container e i risultati fusi in un report solo.
 
 **Conferma interattiva:** all'avvio chiede sempre *quali* dimensioni eseguire (SAST codice · DAST sito live · segreti · dipendenze · container · conformità OWASP), il target (repo e/o URL) e — solo per il DAST — autorizzazione e modalità (passiva/attiva, stessi guardrail di `/vuln-audit`). Poi mostra il piano e attende il via.
 
@@ -336,7 +334,7 @@ Command `/security-report`: un **orchestratore di sicurezza** che produce **un u
 
 | Dimensione | Preferito | Fallback |
 |------------|-----------|----------|
-| **SAST** | `semgrep --config auto` | `/senior-engineer:security` + `/security-review` (review LLM) |
+| **SAST** | `semgrep --config auto` | `/security-review` (review LLM) |
 | **Segreti** | `gitleaks` / `trufflehog` | Secret Scanner → grep di pattern su repo e history git |
 | **Dipendenze** | `osv-scanner` / `grype` | `composer audit` + `npm audit` |
 | **DAST** | `/vuln-audit <url>` | `nmap`/`nikto`/`nuclei` → check passivi via `curl`/`openssl` |
@@ -392,9 +390,7 @@ claude-skills/
 │   ├── .claude-plugin/plugin.json
 │   ├── commands/
 │   │   ├── audit.md
-│   │   ├── debug.md
 │   │   ├── refactor.md
-│   │   ├── security.md
 │   │   └── techlead.md
 │   └── README.md
 ├── master-docs-plugin/
@@ -455,6 +451,7 @@ Aggiornamenti notevoli dei plugin. La versione corrente di ogni plugin è nella 
 
 ### senior-engineer
 
+- **2.0.0** — **Breaking**: rimossi i command `/debug` e `/security` perché duplicavano strumenti già disponibili — `/debug` riproponeva la metodologia della skill nativa `systematic-debugging` (che si auto-attiva su qualsiasi bug), `/security` si sovrapponeva a `/security-review` e all'orchestratore `/security-report`. Restano i tre command senza equivalenti: `audit`, `refactor`, `techlead`.
 - **1.0.0** — Release iniziale: cinque command (`audit`, `debug`, `refactor`, `security`, `techlead`) che simulano i ruoli di un senior engineer, pensati per capire e valutare il codice prima di modificarlo.
 
 ### master-docs
@@ -467,7 +464,7 @@ Aggiornamenti notevoli dei plugin. La versione corrente di ogni plugin è nella 
 
 ### security-report
 
-- **1.0.0** — Release iniziale: command `/security-report`, orchestratore che produce un report di sicurezza unificato coordinando i migliori strumenti disponibili (SAST con `semgrep`, DAST con `/vuln-audit`, segreti con `gitleaks`, dipendenze con `osv-scanner`/`composer audit`/`npm audit`, container con `trivy`), con fallback ai plugin `/senior-engineer:security` e `/security-review`. Conferma interattiva dei controlli da eseguire, detect delle capacità con fallback dichiarati, esecuzione su subagenti paralleli read-only, dedup tra fonti e report unico con gravità normalizzata, mappatura OWASP Top 10 e tabella di copertura.
+- **1.0.0** — Release iniziale: command `/security-report`, orchestratore che produce un report di sicurezza unificato coordinando i migliori strumenti disponibili (SAST con `semgrep`, DAST con `/vuln-audit`, segreti con `gitleaks`, dipendenze con `osv-scanner`/`composer audit`/`npm audit`, container con `trivy`), con fallback su `/security-review`. Conferma interattiva dei controlli da eseguire, detect delle capacità con fallback dichiarati, esecuzione su subagenti paralleli read-only, dedup tra fonti e report unico con gravità normalizzata, mappatura OWASP Top 10 e tabella di copertura.
 
 ---
 

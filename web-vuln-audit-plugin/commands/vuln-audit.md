@@ -11,7 +11,7 @@ Stai eseguendo un **audit di vulnerabilità dinamico (DAST)** su un **sito web i
 - Il flag `--active` (o `--deep`) richiede la **modalità attiva** (scansione intrusiva).
 - Se vuoto: chiedi la URL. Senza un target non c'è audit.
 
-> ⚠️ Questo NON è l'audit statico del codice (per quello c'è `/security` di `senior-engineer`). Qui il bersaglio è il **sito vivo**, non i sorgenti.
+> ⚠️ Questo NON è l'audit statico del codice (per quello c'è `/security-review`, o `/security-report` per l'audit completo). Qui il bersaglio è il **sito vivo**, non i sorgenti.
 
 ---
 
