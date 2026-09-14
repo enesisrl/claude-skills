@@ -20,6 +20,7 @@ Questo repository raccoglie un insieme di plugin (skill e command) pensati per a
   - [master-docs](#master-docs)
   - [web-vuln-audit](#web-vuln-audit)
   - [security-report](#security-report)
+  - [dev-pipeline](#dev-pipeline)
 - [Struttura del repository](#struttura-del-repository)
 - [Changelog](#changelog)
 - [Sviluppo e contributi](#sviluppo-e-contributi)
@@ -53,6 +54,7 @@ claude plugin install senior-engineer
 claude plugin install master-docs
 claude plugin install web-vuln-audit
 claude plugin install security-report
+claude plugin install dev-pipeline
 ```
 
 Per aggiornare un plugin già installato:
@@ -76,6 +78,7 @@ claude plugin update <nome-plugin>
 | [`master-docs`](#master-docs) | Command | 1.6.0 | Flusso `graphify` + docs (knowledge graph + documentazione moduli) per progetti Master Laravel e app Ionic |
 | [`web-vuln-audit`](#web-vuln-audit) | Command | 1.0.0 | `/vuln-audit`: audit di vulnerabilità dinamico (DAST) di un sito web live, passivo/attivo, con report OWASP |
 | [`security-report`](#security-report) | Command | 1.0.0 | `/security-report`: report di sicurezza unificato che orchestra SAST/DAST/segreti/dipendenze/container, con conferma dei controlli |
+| [`dev-pipeline`](#dev-pipeline) | Command | 1.0.0 | `/pipeline`: lavora un task end-to-end in 5 fasi con subagenti configurabili per fase (modello Claude o agente esterno) |
 
 ---
 
@@ -358,6 +361,38 @@ claude plugin install security-report
 
 ---
 
+### dev-pipeline
+
+Command `/pipeline` che lavora **un task di sviluppo** end-to-end in cinque fasi, con tre subagenti a contesto isolato.
+
+| # | Fase | Dove gira | Produce |
+|---|------|-----------|---------|
+| 1 | **CHIARISCI** | nel main loop, con l'utente | `REQUIREMENT.md` + `.ai/DECISIONS.md` |
+| 2 | **PIANIFICA** | agente `planner` | `PLAN.md` |
+| 3 | **IMPLEMENTA** | agente `implementer` (`implement`) | codice + `IMPLEMENTATION.md` |
+| 4 | **REVISIONA** | agente `reviewer` | `CODE_REVIEW.md` |
+| 5 | **CORREGGI** | agente `implementer` (`fix`) | `FIX_REPORT.<N>.md` |
+
+**Ogni fase è configurabile** in `.ai/pipeline.json`: `claude:opus|sonnet|haiku` per un subagente Claude, oppure il nome di un provider esterno dichiarato in `providers` (Codex, Gemini, altro CLI). La disponibilità di un provider si verifica con uno **smoke test**, non con `command -v`: un CLI che richiede un'approvazione interattiva è installato e inutilizzabile. Se lo smoke test fallisce la fase ripiega su Claude e viene marcata `DEGRADED`.
+
+**Tre livelli di indipendenza della review**, sempre dichiarati nel report: **A** provider esterno (modello diverso, punti ciechi diversi) · **B** altro modello Claude · **C** stesso modello, con contesto fresco, solo il diff e ruolo avversariale.
+
+**Consumo di token.** Il contesto principale non apre mai un artefatto: ogni subagente chiude con un riassunto a forma fissa, e gli artefatti passano fra agenti per path. Il revisore riceve un diff precalcolato, mai il repository; il secondo giro vede solo il diff del fix. I ruoli dichiarano un tetto di righe.
+
+**Limiti**: non committa, lavora un task per volta (non progetti interi), non elimina il test umano finale — lo sposta all'inizio, dove costa una domanda invece di un giro completo. Massimo 2 cicli di fix, poi si ferma.
+
+**Rapporto con `dev-plan`**: `/dev-plan` produce un documento per un umano da leggere e approvare; `/pipeline` produce un piano per la macchina successiva della catena. Decidere *se* fare un lavoro → `dev-plan`. Farlo fare → `pipeline`.
+
+**Utilizzo:**
+
+```
+/pipeline "aggiungi il filtro per stato all'elenco ordini"
+/pipeline "fix race condition nel job di sync" --task-id fix-sync-race
+/pipeline --resume --task-id fix-sync-race
+```
+
+---
+
 ## Struttura del repository
 
 ```
@@ -412,6 +447,18 @@ claude-skills/
 │   ├── .claude-plugin/plugin.json
 │   ├── commands/security-report.md
 │   └── README.md
+├── dev-pipeline-plugin/
+│   ├── .claude-plugin/plugin.json
+│   ├── commands/pipeline.md
+│   ├── agents/
+│   │   ├── planner.md
+│   │   ├── implementer.md
+│   │   └── reviewer.md
+│   ├── roles/                    ← ruoli neutri, eseguibili da Claude o da un CLI esterno
+│   │   ├── planner.md
+│   │   └── reviewer.md
+│   ├── pipeline.default.json     ← configurazione per fase
+│   └── README.md
 └── README.md                     ← questo file
 ```
 
@@ -465,6 +512,12 @@ Aggiornamenti notevoli dei plugin. La versione corrente di ogni plugin è nella 
 ### security-report
 
 - **1.0.0** — Release iniziale: command `/security-report`, orchestratore che produce un report di sicurezza unificato coordinando i migliori strumenti disponibili (SAST con `semgrep`, DAST con `/vuln-audit`, segreti con `gitleaks`, dipendenze con `osv-scanner`/`composer audit`/`npm audit`, container con `trivy`), con fallback su `/security-review`. Conferma interattiva dei controlli da eseguire, detect delle capacità con fallback dichiarati, esecuzione su subagenti paralleli read-only, dedup tra fonti e report unico con gravità normalizzata, mappatura OWASP Top 10 e tabella di copertura.
+
+---
+
+### dev-pipeline
+
+- **1.0.0** — Release iniziale: command `/pipeline` che lavora un task di sviluppo end-to-end in cinque fasi (chiarisci, pianifica, implementa, revisiona, correggi) con tre subagenti a contesto isolato. Ogni fase configurabile via `.ai/pipeline.json` con un modello Claude (`claude:opus|sonnet|haiku`) o un agente esterno dichiarato in `providers` (Codex, Gemini, altro CLI), con smoke test di disponibilità, fallback marcato `DEGRADED` e tre livelli dichiarati di indipendenza della review. Disciplina sui token: il contesto principale non apre mai un artefatto, gli artefatti passano per path fra subagenti, il revisore riceve un diff precalcolato e i ruoli hanno un tetto di righe. Massimo 2 giri di fix, poi escalation. `.ai/DECISIONS.md` persiste a livello di progetto.
 
 ---
 

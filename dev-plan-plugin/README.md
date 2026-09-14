@@ -53,3 +53,12 @@ dev-plan-plugin/
     dev-plan/
       SKILL.md
 ```
+
+## Rapporto con `dev-pipeline`
+
+`dev-plan` produce un **documento per un umano**: un piano da leggere, discutere e approvare prima
+di decidere se e come affrontare un lavoro. `/pipeline` (plugin `dev-pipeline`) produce invece un
+piano destinato alla **macchina successiva della catena**, che nessuno leggerà se non l'agente che
+implementa.
+
+Decidere *se* fare un lavoro → `dev-plan`. Farlo fare → `/pipeline`.

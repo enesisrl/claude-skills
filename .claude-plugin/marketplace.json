@@ -50,6 +50,11 @@
       "name": "security-report",
       "source": "./security-report-plugin",
       "description": "Command /security-report: report di sicurezza unificato che orchestra i migliori strumenti disponibili (SAST codice, DAST sito live, segreti, dipendenze, container, conformità OWASP), chiedendo conferma sui controlli da eseguire e usando fallback quando un tool manca."
+    },
+    {
+      "name": "dev-pipeline",
+      "source": "./dev-pipeline-plugin",
+      "description": "Command /pipeline: lavora un task di sviluppo end-to-end in cinque fasi (chiarisci, pianifica, implementa, revisiona, correggi) con tre subagenti a contesto isolato. Ogni fase è configurabile — modello Claude o agente esterno (Codex, Gemini, altro CLI) — con fallback dichiarato e tre livelli di indipendenza della review. Ottimizzato sul consumo di token: il contesto principale non legge mai un artefatto."
     }
   ]
 }

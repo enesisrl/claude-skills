@@ -1,0 +1,21 @@
+{
+  "name": "dev-pipeline",
+  "version": "1.0.0",
+  "description": "Command /pipeline: lavora un task di sviluppo end-to-end in cinque fasi (chiarisci, pianifica, implementa, revisiona, correggi) con tre subagenti a contesto isolato. Ogni fase è configurabile: modello Claude o agente esterno (Codex, Gemini, altro CLI). Chiede all'inizio, non alla fine — e tiene il contesto principale libero passando solo riassunti.",
+  "author": {
+    "name": "Emanuele Toffolon",
+    "email": "emanuele.toffolon@enesi.it"
+  },
+  "keywords": [
+    "pipeline",
+    "multi-agent",
+    "orchestration",
+    "code-review",
+    "planning",
+    "codex",
+    "token-efficiency"
+  ],
+  "commands": [
+    "./commands/pipeline.md"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "_doc": "Configurazione della pipeline. Copiala in .ai/pipeline.json nel progetto e adattala. Ogni fase vuole una stringa: 'claude:<modello>' per un subagente Claude, oppure il nome di un provider definito sotto.",
+
+  "phases": {
+    "plan":      "claude:opus",
+    "implement": "claude:sonnet",
+    "review":    "claude:opus",
+    "fix":       "claude:sonnet"
+  },
+
+  "providers": {
+    "codex": {
+      "cmd": "codex exec -s read-only",
+      "prompt": "stdin",
+      "smoke": "codex --version"
+    },
+    "codex-write": {
+      "cmd": "codex exec -s workspace-write",
+      "prompt": "stdin",
+      "smoke": "codex --version"
+    },
+    "gemini": {
+      "cmd": "gemini -p",
+      "prompt": "stdin",
+      "smoke": "gemini --version"
+    },
+    "claude-cli": {
+      "cmd": "claude -p --model sonnet",
+      "prompt": "stdin",
+      "smoke": "claude --version"
+    }
+  },
+
+  "limits": {
+    "maxFixCycles": 2,
+    "planMaxLines": 300,
+    "reviewMaxFindings": 20,
+    "summaryMaxLines": 25
+  },
+
+  "artifacts": {
+    "dir": ".ai/tasks",
+    "gitignore": ["PLAN.md", "IMPLEMENTATION.md", "CODE_REVIEW*.md", "FIX_REPORT*.md", "STATUS.json"]
+  }
+}
